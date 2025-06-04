@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>バイナリーバトル（8人対戦）</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background: #0f0f0f;
+      color: #00ffcc;
+      font-family: 'Courier New', monospace;
+      text-align: center;
+      padding: 20px;
+      margin: 0;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 2em;
+      margin-bottom: 20px;
+      text-shadow: 0 0 10px #00ffcc;
+    }
+
+    select, button {
+      font-size: 1.2em;
+      margin: 12px auto;
+      padding: 16px 20px;
+      min-height: 48px;
+      border: 2px solid #00ffcc;
+      background: #101010;
+      color: #00ffcc;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 320px;
+      display: block;
+    }
+
+    button:hover {
+      background: #00ffcc;
+      color: #101010;
+      transition: 0.2s;
+    }
+
+    .number-box {
+      font-size: 2.5em;
+      margin: 30px 0;
+      color: #ffffff;
+      text-shadow: 0 0 15px #00ffcc;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 1.2em;
+    }
+
+    .binary {
+      font-size: 1.2em;
+      margin-top: 10px;
+      color: #999;
+    }
+
+    @media (min-width: 600px) {
+      select, button {
+        font-size: 1.3em;
+        padding: 18px 24px;
+        min-height: 52px;
+      }
+
+      .number-box {
+        font-size: 3em;
+      }
+
+      .result, .binary {
+        font-size: 1.5em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🧠 バイナリーバトル 🔢</h1>
+    <p>表示された数字に対して、あなたの担当ビットが0か1かを予想しよう！</p>
+
+    <div class="number-box" id="randomNumberBox">???</div>
+
+    <label>担当ビット（左が7、右が0）:</label><br>
+    <select id="bitSelect">
+      <option value="7">ビット 7（最上位）</option>
+      <option value="6">ビット 6</option>
+      <option value="5">ビット 5</option>
+      <option value="4">ビット 4</option>
+      <option value="3">ビット 3</option>
+      <option value="2">ビット 2</option>
+      <option value="1">ビット 1</option>
+      <option value="0">ビット 0（最下位）</option>
+    </select>
+
+    <label>あなたの予想：</label><br>
+    <select id="guessSelect">
+      <option value="0">0</option>
+      <option value="1">1</option>
+    </select>
+
+    <button onclick="judge()">判定する</button>
+    <button onclick="generateNumber()">🔄 数字を再生成</button>
+
+    <div class="result" id="resultArea"></div>
+    <div class="binary" id="binaryDisplay"></div>
+  </div>
+
+  <script>
+    let currentNumber = null;
+
+    function generateNumber() {
+      currentNumber = Math.floor(Math.random() * 256);
+      document.getElementById('randomNumberBox').textContent = currentNumber;
+      document.getElementById('resultArea').textContent = '';
+      document.getElementById('binaryDisplay').textContent = '';
+    }
+
+    function judge() {
+      if (currentNumber === null) {
+        alert("まず『数字を再生成』してください！");
+        return;
+      }
+
+      const bit = parseInt(document.getElementById('bitSelect').value);
+      const guess = parseInt(document.getElementById('guessSelect').value);
+      const actualBit = (currentNumber >> bit) & 1;
+      document.getElementById('binaryDisplay').textContent =
+        `（2進数: ${currentNumber.toString(2).padStart(8, '0')}）`;
+
+      const resultArea = document.getElementById('resultArea');
+      resultArea.innerHTML =
+        `あなたの担当ビット：${bit}番目<br>予想：${guess} / 実際：${actualBit}<br>` +
+        (guess === actualBit
+          ? "✅ <span style='color:lightgreen'>正解！</span>"
+          : "❌ <span style='color:salmon'>不正解</span>");
+    }
+
+    generateNumber();
+  </script>
+</body>
+</html>
